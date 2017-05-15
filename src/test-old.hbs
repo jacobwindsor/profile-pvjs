@@ -57,6 +57,8 @@
       // Add a named function to the window variable so it can be accessed via the iframes onload event
       window['onLoaded' + num] = resolveWithElapsed(resolve, t0);
 
+      // use an iframe to render the Pvjs diagram.
+      // Uses the latest version of Pvjs as used in WikiPathways
       $('#pathway')
         .append('<iframe id="pathwayIframe" onload="window.onLoaded' + num + '()" src="http://www.wikipathways.org/wpi/PathwayWidget.php?id=WP' + {{WPID}} + '"></iframe>');
     });
