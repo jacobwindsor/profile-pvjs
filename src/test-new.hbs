@@ -1,8 +1,31 @@
 <html>
   <head>
-    <title>Testing {{WPID}}</title>
+    <title>Testing {{WPID}} with new Pvjs</title>
+    <link href="/newPvjs/style.css" type="text/css" />
+    <script src="/newPvjs/index.js"></script>
+    <script
+      src="http://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
   </head>
   <body>
-    <h1>Testing {{WPID}}</h1>
+    <h1>Testing {{WPID}} with new Pvjs</h1>
+    <div id="time"></div>
+    <div id="pathway"></div>
+    <script>
+      $(document).ready(function() {
+        const t0 = performance.now();
+        Pvjs.loadDiagram('#pathway', 'WP' + {{WPID}}, {}, (instance) => {
+          instance.ready.subscribe(ready => {
+            if(!ready) return;
+            const t1 = performance.now();
+            const elapsed = t1 - t0;
+            const elem = document.getElementById('time');
+            elem.innerHTML = `<p>Time to load is <strong>${Math.round(elapsed)} ms</strong>.</p>`;
+
+          });
+        });
+      });
+    </script>
   </body>
 </html>

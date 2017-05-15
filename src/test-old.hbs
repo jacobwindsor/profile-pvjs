@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Testing {{WPID}} with old Pvjs</title>
+
+  <script
+    src="http://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+
+</head>
+<body>
+<h1>Testing {{WPID}} with old Pvjs</h1>
+<div id="time"></div>
+<iframe onload="onLoaded()" id="pathwayIframe" frameborder="0" width="98%" height="500px" seamless="seamless" scrolling="no" src="http://www.wikipathways.org/wpi/PathwayWidget.php?id=WP{{WPID}}"></iframe>
+<script>
+  (function() {
+      $(document).ready(function() {
+        window.t0 = performance.now();
+      });
+  })();
+
+  function onLoaded() {
+      const t1 = performance.now();
+      $('#time').append(`Time elapsed is <strong>${t1 - t0}</strong> ms.`);
+  }
+</script>
+</body>
+</html>
