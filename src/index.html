@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script src="http://wikipathways.github.io/pvjs/lib/pvjs/pvjs-polyfills-2.3.3.bundle.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://wikipathways.github.io/pvjs/lib/pvjs/pvjs-2.3.3.bundle.min.js"></script>
+  </head>
+  <body>
+    <h1>Profile Pvjs</h1>
+
+    <div id="old-pvjs">
+
+    </div>
+
+    <div id="new-pvjs">
+
+    </div>
+
+    <div id="execution-time"></div>
+
+    <script>
+      var oldOut = document.getElementById('old-pvjs');
+      var newOut = document.getElementById('new-pvjs');
+      var timeOut = document.getElementById('execution-time');
+
+      // Profile old
+      var t0 = performance.now();
+      Pvjs(oldOut, {
+        sourceData: [
+          // at least one item required
+          {
+            uri:'file://home/jacob/Projects/profile-pvjs/src/WP525_84475.gpml',
+            fileType:'gpml' // generally will correspond to filename extension
+          }
+        ]
+      });
+      var t1 = performance.now();
+      var oldTime = document.createElement('p');
+      oldTime.innerHTML = 'Old Pvjs time is ' + t1 - t0;
+      timeOut.appendChild(oldTime);
+    </script>
+  </body>
+</html>
+
