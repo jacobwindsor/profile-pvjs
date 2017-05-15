@@ -11,7 +11,9 @@
 <body>
 <h1>Testing {{WPID}} with old Pvjs</h1>
 <div id="time"></div>
-<iframe onload="onLoaded()" id="pathwayIframe" frameborder="0" width="98%" height="500px" seamless="seamless" scrolling="no" src="http://www.wikipathways.org/wpi/PathwayWidget.php?id=WP{{WPID}}"></iframe>
+<div id="pathway">
+
+</div>
 <script>
   (function() {
       $(document).ready(function() {
@@ -22,6 +24,51 @@
   function onLoaded() {
       const t1 = performance.now();
       $('#time').append(`Time elapsed is <strong>${t1 - t0}</strong> ms.`);
+  }
+
+  $(document).ready(function() {
+    window.totalTime = 0;
+    const time = $('#time');
+    const numTests = 5;
+
+    time.append(`<p>Running ${numTests} tests...</p>`);
+    const allPromises = [];
+
+    for(let i = 0; i < numTests; i++) {
+      const test = runTest(i);
+      console.log(test);
+      test.then(elapsed => {
+        window.totalTime += elapsed;
+        time.append(`<p>Time taken for test ${i} was ${elapsed} ms.`)
+      });
+      allPromises.push(test);
+    }
+
+    Promise.all(allPromises).then(() => {
+      time.append(`<p>Total time to run all tests was ${window.totalTime} ms`);
+      time.append(`<p>Average time to run all tests was ${window.totalTime / numTests} ms`);
+    });
+  });
+
+  function runTest(num) {
+    return new Promise((resolve, reject) => {
+      const t0 = performance.now();
+
+      // Add a named function to the window variable so it can be accessed via the iframes onload event
+      window['onLoaded' + num] = resolveWithElapsed(resolve, t0);
+
+      $('#pathway')
+        .append('<iframe id="pathwayIframe" onload="window.onLoaded' + num + '()" src="http://www.wikipathways.org/wpi/PathwayWidget.php?id=WP' + {{WPID}} + '"></iframe>');
+    });
+  }
+
+  function resolveWithElapsed(resolveFunc, t0) {
+      const resolve= resolveFunc;
+      const t = t0;
+      return function() {
+        const elapsed = performance.now() - t;
+        resolve(elapsed);
+      };
   }
 </script>
 </body>

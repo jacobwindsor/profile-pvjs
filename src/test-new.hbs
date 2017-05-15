@@ -14,18 +14,43 @@
     <div id="pathway"></div>
     <script>
       $(document).ready(function() {
-        const t0 = performance.now();
-        Pvjs.loadDiagram('#pathway', 'WP' + {{WPID}}, {}, (instance) => {
-          instance.ready.subscribe(ready => {
-            if(!ready) return;
-            const t1 = performance.now();
-            const elapsed = t1 - t0;
-            const elem = document.getElementById('time');
-            elem.innerHTML = `<p>Time to load is <strong>${Math.round(elapsed)} ms</strong>.</p>`;
+          window.totalTime = 0;
+          const time = $('#time');
+          const numTests = 5;
 
+          time.append(`<p>Running ${numTests} tests...</p>`);
+          const allPromises = [];
+
+          for(let i = 0; i < numTests; i++) {
+              // clear the diagram
+              $('#pathway').empty();
+              const test = runTest();
+              test.then(elapsed => {
+                  window.totalTime += elapsed;
+                  time.append(`<p>Time taken for test ${i} was ${elapsed} ms.`)
+              });
+              allPromises.push(test);
+          }
+
+          Promise.all(allPromises).then(() => {
+            time.append(`<p>Total time to run all tests was ${window.totalTime} ms`);
+            time.append(`<p>Average time to run all tests was ${window.totalTime / numTests} ms`);
           });
-        });
       });
+
+      function runTest() {
+          return new Promise((resolve, reject) => {
+            const t0 = performance.now();
+            Pvjs.loadDiagram('#pathway', 'WP' + {{WPID}}, {}, (instance) => {
+              instance.ready.subscribe(ready => {
+                if(!ready) return;
+                const t1 = performance.now();
+                const elapsed = t1 - t0;
+                resolve(elapsed);
+              });
+            });
+          });
+      }
     </script>
   </body>
 </html>
